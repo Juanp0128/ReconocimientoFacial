@@ -1,6 +1,6 @@
 from cv2 import cv2
 from visionrostros import *
-
+#Pone a prueba la Webcam
 
 def show_webcam(mirror=False):
     cam = cv2.VideoCapture(0)
