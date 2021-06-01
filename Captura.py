@@ -10,7 +10,7 @@ if not os.path.exists(rutaPersona):
     print('Persona Creada: ', rutaPersona)
     os.makedirs(rutaPersona)
 
-#Captura por WebCam
+#Captura por Webcam
 #cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
 #Captura por Video
