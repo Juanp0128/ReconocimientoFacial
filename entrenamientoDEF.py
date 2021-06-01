@@ -1,7 +1,7 @@
 import cv2
 import os
 import numpy as np
-#Genera o actualiza un archivo XML para guardar los rostros
+#Genera o actualiza un archivo XML para guardar los Rostros
 ruta = 'C:/Users/juanp/Desktop/ReconocimientoFacial/Data'
 listaPersonas = os.listdir(ruta)
 print('Personas: ', listaPersonas)
