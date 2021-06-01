@@ -39,7 +39,7 @@ while True:
     cv2.imshow('frame',frame)
 #Crea 300 archivos JPG con los rostros capturados
     j = cv2.waitKey(1)
-    if j == 25 or count >= 350:
+    if j == 27 or count >= 350:
         break
 
 cam.release()
