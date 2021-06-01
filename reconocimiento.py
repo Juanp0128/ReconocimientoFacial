@@ -1,6 +1,6 @@
 import cv2
 import os
-#Compara lo aprendido mediante el XML con Video/Streaming y determina si lo reconoce o no
+#Compara lo aprendido mediante el XML con Video/streaming y determina si lo reconoce o no
 #Es necesario un entrenamiento con imagenes diversas de el personaje para mayor efectividad
 ruta = 'C:/Users/juanp/Desktop/ReconocimientoFacial/Data'
 listaPersonas = os.listdir(ruta)
