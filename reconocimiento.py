@@ -54,7 +54,7 @@ while True:
 
     cv2.imshow('frame',frame)
     j = cv2.waitKey(1)
-    if j == 25:
+    if j == 27:
         break
 
 cam.release()
