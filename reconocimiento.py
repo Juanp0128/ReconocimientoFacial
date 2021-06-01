@@ -1,59 +1,63 @@
 import cv2
-import entrenar
+import os
+#Compara lo aprendido mediante el XML con Video/Streaming y determina si lo reconoce o no
+#Es necesario un entrenamiento con imagenes diversas de el personaje para mayor efectividad
+ruta = 'C:/Users/juanp/Desktop/ReconocimientoFacial/Data'
+listaPersonas = os.listdir(ruta)
+print('Personas: ', listaPersonas)
+#Metodo Eigen
+loadFaceRecognizer = cv2.face.EigenFaceRecognizer_create()
 
-imagen_duque = entrenar.load_image_file("duque1c.jpg")
-imagen_trump = entrenar.load_image_file("trump1.jpg")
+Axml = 'C:/Users/juanp/PycharmProjects/IdentidicadorRostros/Machinevision/EntrenamientoEigenn.xml'
+loadFaceRecognizer.read(Axml)
+
+#Webcam
+#cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+
+#Video Luisito, persona que RECONOCE porque fue entrenado
+cam = cv2.VideoCapture('C:/Users/juanp/Desktop/ReconocimientoFacial/luisc.mp4')
+
+#Video Auronplay, Persona que RECONOCE porque fue entrenado
+#cam = cv2.VideoCapture('C:/Users/juanp/Desktop/ReconocimientoFacial/auronplay1.mp4')
+
+#Video de Mujer, Persona que DESCONOCE
+#cam = cv2.VideoCapture('C:/Users/juanp/Desktop/ReconocimientoFacial/mujer.mp4')
+
+entrenamiento = 'haarcascade_frontalface_default.xml'
+cap = cv2.CascadeClassifier(entrenamiento)
+
+while True:
+    #Configuraciones esteticas de el cuadro, porcentajes de reconocimiento y nombre
+    capture,frame = cam.read()
+    if capture == False: break
+    gris = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    auxFrame = gris.copy()
+
+    caritas = cap.detectMultiScale(gris,1.3,5)
+
+    for (x,y,w,h) in caritas:
+        cara = auxFrame[y:y+h,x:x+w]
+        cara = cv2.resize(cara,(150,150),interpolation= cv2.INTER_CUBIC)
+        resultado = loadFaceRecognizer.predict(cara)
+
+        cv2.putText(frame,'{}'.format(resultado),(x,y-5),1,1.3,(255,255,0),1,cv2.LINE_AA)
+
+
+        if resultado[1] < 5700:
+            cv2.putText(frame, '{}'.format(listaPersonas[resultado[0]]), (x, y - 25), 2, 1.1, (0, 255, 0), 1, cv2.LINE_AA)
+            cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+        else:
+            cv2.putText(frame, 'Quien sos?', (x, y - 20), 2, 0.8, (0, 0, 255), 1, cv2.LINE_AA)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
 
 
-einstein_encodings = entrenar.face_encodings(imagen_duque)[0]
-paul_encodings = entrenar.face_encodings(imagen_trump)[0]
+    cv2.imshow('frame',frame)
+    j = cv2.waitKey(1)
+    if j == 25:
+        break
 
-
-encodings_conocidos = [
-    einstein_encodings,
-    paul_encodings,
-]
-nombres_conocidos = [
-    "Duque",
-    "Trump",
-]
-font = cv2.FONT_HERSHEY_COMPLEX
-
-img = entrenar.load_image_file('caras.jpg')
-
-loc_rostros = []
-encodings_rostros = []
-nombres_rostros = []
-
-loc_rostros = entrenar.face_locations(img)
-encodings_rostros = entrenar.face_encodings(img, loc_rostros)
-
-for encoding in encodings_rostros:
-
-
-    coincidencias = entrenar.compare_faces(encodings_conocidos, encoding)
-
-    if True in coincidencias:
-        nombre = nombres_conocidos[coincidencias.index(True)]
-
-    else:
-        nombre = "???"
-
-    nombres_rostros.append(nombre)
-
-for (top, right, bottom, left), nombre in zip(loc_rostros, nombres_rostros):
-
-    if nombre != "???":
-        color = (0, 255, 0)  # Verde
-    else:
-        color = (0, 0, 255)  # Rojo
-
-    cv2.rectangle(img, (left, top), (right, bottom), color, 2)
-    cv2.rectangle(img, (left, bottom - 20), (right, bottom), color, -1)
-    cv2.putText(img, nombre, (left, bottom - 6), font, 0.6, (0, 0, 0), 1)
-
-cv2.imshow('Output', img)
-print("\nResultado!! ESC para salir\n")
-cv2.waitKey(0)
+cam.release()
 cv2.destroyAllWindows()
+
+
